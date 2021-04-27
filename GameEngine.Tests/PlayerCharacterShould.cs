@@ -244,56 +244,28 @@ namespace GameEngine.Tests
             Assert.PropertyChanged(_sut, "Health", () => _sut.TakeDamage(10));
         }
 
-        [Fact]
-        public void TakeZeroDamage()
+        // data-driven test
+        // this attribute tell xUnit that this method should be executed multiple times
+        // and for each execution, this method needs to be provided with some test data
+        // [InlineData] is of the ways to enter test data, first parameter for damage, second for expectedHealth
+        // [InlineData] cannot share the test data across test methods or test classes
+        [Theory]
+        [InlineData(0, 100)]
+        [InlineData(1, 99)]
+        [InlineData(50, 50)]
+        [InlineData(101, 1)]
+        // [MemberData(nameof(InternalHealthDamageTestData.TestData), MemberType = typeof(InternalHealthDamageTestData))]
+        // [MemberData(nameof(ExternalHealthDamageTestData.TestData), MemberType = typeof(ExternalHealthDamageTestData))]
+        // [HealthDamageData] // Custom test data attribute
+        public void TakeDamage(int damage, int expectedHealth)
         {
             // Arrange
 
             // Act
-            _sut.TakeDamage(0);
+            _sut.TakeDamage(damage);
 
             // Assert
-            // object must implement INotifyPropertyChanged interface
-            Assert.Equal(100, _sut.Health);
-        }
-
-        [Fact]
-        public void TakeSmallDamage()
-        {
-            // Arrange
-
-            // Act
-            _sut.TakeDamage(1);
-
-            // Assert
-            // object must implement INotifyPropertyChanged interface
-            Assert.Equal(99, _sut.Health);
-        }
-
-        [Fact]
-        public void TakeMediumDamage()
-        {
-            // Arrange
-
-            // Act
-            _sut.TakeDamage(50);
-
-            // Assert
-            // object must implement INotifyPropertyChanged interface
-            Assert.Equal(50, _sut.Health);
-        }
-
-        [Fact]
-        public void HaveMinimum1Health()
-        {
-            // Arrange
-
-            // Act
-            _sut.TakeDamage(101);
-
-            // Assert
-            // object must implement INotifyPropertyChanged interface
-            Assert.Equal(1, _sut.Health);
+            Assert.Equal(expectedHealth, _sut.Health);
         }
 
         public void Dispose()
